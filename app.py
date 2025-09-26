@@ -36,3 +36,15 @@ def image():
             <img src=""" + path + """>
         </body>
     </html>"""
+
+count = 0
+@app.route("/counter")
+def counter():
+    global count
+    count += 1
+    return """<!doctype html>
+    <html> 
+        <body>
+            Счетчик посещения страницы """ + str(count) + """
+        </body>
+    </html>"""
