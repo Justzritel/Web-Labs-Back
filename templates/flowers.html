@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Крадинов Анатолий. Список цветов</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css')}}">
+</head>
+<body>
+    <header>
+        <h1>НГТУ, ФБ, Лабораторная 2</h1>
+    </header>
+
+    <main>
+        <h1>Список цветов</h1>
+
+        {% if flowers %}
+        <table border="1" cellpadding="6">
+            <tr>
+                <th>№</th>
+                <th>Название</th>
+                <th>Цена (₽)</th>
+                <th>Действие</th>
+            </tr>
+            {% for flower in flowers %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ flower.name }}</td>
+                <td>{{ flower.price }}</td>
+                <td><a href="/lab2/flowers/delete/{{ loop.index0 }}">Удалить</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+            <p>Список цветов пуст</p>
+        {% endif %}
+
+        <hr>
+
+        <h2>Добавить новый цветок</h2>
+        <form action="/lab2/flowers/add" method="post">
+            <p><label>Название: <input type="text" name="name" required></label></p>
+            <p><label>Цена: <input type="number" name="price" min="1" required></label></p>
+            <button type="submit">Добавить</button>
+        </form>
+
+        <p><a href="/lab2/flowers/clear">🗑 Удалить все цветы</a></p>
+        
+        <p><a href="/lab2/">К списку страниц</a></p>
+    </main>
+
+    <footer>
+        &copy; Крадинов Анатолий, ФБИ-33, 3 курс, 2025
+    </footer>
+</body>
+</html>
