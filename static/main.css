@@ -1,0 +1,64 @@
+body {
+    background-color: lightblue;
+    color: maroon;
+    font-family: Arial;
+    margin: 0px;
+}
+main{
+color: black;
+margin: 10px 20px 60px;
+font-family: Times;
+}
+footer{
+background-color: black;
+color: green;
+margin: 10px;
+font-family: Cambria;
+text-align: right;
+position: fixed;
+bottom: 0;
+right: 0;
+left: 0;
+}
+header{
+    background-color: black;
+    color: green;
+    margin: 10px;
+    font-family: Cambria;
+}
+a{
+    color: green;
+    text-decoration: none;
+    transition: 1s 2s;
+}
+a:link{
+color: blueviolet;
+background-color: gold;
+}
+a:visited{
+color: peru;
+text-shadow: 5px 5px 5px blue;
+}
+
+a:hover {
+    color: red;
+    text-decoration: underline;
+    text-shadow: 5px 5px 5px brown;
+    background-color: aqua;
+    transition: 0.3s;
+
+}
+a:active {
+    color: black;
+    opacity: 0.3;
+}
+div.menu{
+    border: 10px solid #7cba0880;
+    border-radius: 5px;
+    width: 250px;
+    margin: 0 auto;
+}
+div.menu:hover{
+background-color: rgba(22, 50, 152, 0.567);
+box-shadow: 5px 5px 15px rgba(237, 17, 17, 0.566);
+}
