@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request, redirect, render_template_string, abort
+from flask import Flask, url_for, request, redirect, render_template_string, abort, render_template
 import datetime
 app= Flask(__name__)
 
@@ -470,10 +470,31 @@ def a2():
     return 'со слэшем'
 
 
-flower_list = ('роза','тюльпан','незабудка','ромашка')
+flower_list = ['роза','тюльпан','незабудка','ромашка']
 @app.route('/lab2/flowers/<int:flower_id>')
 def flowers(flower_id):
     if flower_id > len(flower_list):
         abort(404)
     else:
         return "id=" + flower_list[flower_id]
+@app.route('/lab2/flowers/<name>')
+def add_flower(name):
+    flower_list.append(name)
+    return f'''
+<!doctype html>
+<html>
+    <body>
+    <h1>Добавлен цветок</h1>
+    <p>Название нового цветка: {name}</p>
+    <p>Всего цветов: {len(flower_list)}</p>
+    <p>Полный список: {flower_list}</p>
+    </body>
+</html>
+'''
+@app.route('/lab2/example')
+def example():
+    name = 'Крадинов Анатолий'
+    nomer = '2'
+    group = 'ФБИ-33'
+    kurs = '3 курс'
+    return render_template('example.html', name=name, nomer=nomer, kurs=kurs, group=group)
