@@ -1,7 +1,8 @@
-from flask import Flask, url_for, request, redirect, render_template_string, abort, render_template
+from flask import Flask, url_for, request, redirect, abort, render_template, session
 import datetime
+from lab1 import lab1
 app= Flask(__name__)
-
+app.register_blueprint(lab1)
 
 @app.route("/")
 @app.route("/index")
@@ -16,7 +17,7 @@ def index():
         </header>
         <main>
             <menu>
-                <li><a href=""" + url_for('lab1') + """>Первая лабораторная</a></li>
+                <li><a href=""" + url_for('lab1.lab') + """>Первая лабораторная</a></li>
                 <li><a href=""" + url_for('lab2') + """>Вторая лабораторная</a></li>
             </menu>
         </main>
@@ -26,126 +27,7 @@ def index():
     </body>
     </html>"""
 
-@app.route("/lab1")
-def lab1():
-    return """<!doctype html>
-<html>
-    <head>
-        <title>Лабораторная 1</title>
-    </head>
-    <body>
-        <header>
-            НГТУ, ФБ, WEB-программирование, часть 2. Список лабораторных
-        </header>
-        <main>
-            <h1>Первая лабораторная работа</h1>
-            
-            <p>Flask — фреймворк для создания веб-приложений на языке
-            программирования Python, использующий набор инструментов
-            Werkzeug, а также шаблонизатор Jinja2. Относится к категории так
-            называемых микрофреймворков — минималистичных каркасов
-            веб-приложений, сознательно предоставляющих лишь самые ба-
-            зовые возможности.</p>
-            
-            <a href=""" + url_for('index') + """>Вернуться на главную</a>
-            
-            <h2>Список роутов</h2>
-            <ul>
-                <li><a href=""" + url_for('index') + """>Web-сервер</a></li>
-                <li><a href=""" + url_for('func') + """>Об авторе</a></li>
-                <li><a href=""" + url_for('image') + """>Изображение</a></li>
-                <li><a href=""" + url_for('counter') + """>Счетчик посещений</a></li>
-                <li><a href=""" + url_for('info') + """>Перенаправление</a></li>
-                <li><a href=""" + url_for('created') + """>Создание</a></li>
-            </ul>
-        </main>
-        <footer>
-            Крадинов Анатолий Иванович, ФБИ-33, 3 курс, 2025
-        </footer>
-    </body>
-</html>"""
 
-@app.route("/lab1/author")
-def func():
-    name = "Крадинов Анатолий Иванович"
-    group = "ФБИ-33"
-    faculty = "ФБ"
-
-    return """<!doctype html>
-    <html> 
-       <body>
-           <p>Студент: """+ name + """<p>
-           <p>Группа: """+ group + """<p>
-           <p>Факультет: """+ faculty + """<p>
-           <a href='/web/>web</a>
-        </body>
-    </html>"""
-
-@app.route("/lab1/image")
-def image():
-    path = url_for("static", filename="image.jpg")
-    css_path = url_for("static", filename="lab1.css")
-    html_content="""<!doctype html>
-<html> 
-    <head>
-        <title>Хорошее, а не плохое</title>
-        <link rel="stylesheet" href=""" + css_path + """>
-    </head>
-    <body>
-            <div class="container">
-                <link rel="stylesheet" href=""" + css_path + """>
-                <h1>Делайте хорошее, а плохое не делайте</h1>
-                <img src=""" + path + """>
-            </div>
-        </body>
-</html>"""
-    return html_content, 200, {
-        'Content-Language': 'ru',
-        'X-MEM': 'FINE',
-        'X-Server-Technology': 'Flask Python Framework',
-        'Content-Type': 'text/html; charset=utf-8'
-    }
-
-count = 0
-@app.route("/lab1/counter")
-def counter():
-    global count
-    count += 1
-    time = datetime.datetime.today()
-    url = request.url
-    client_ip = request.remote_addr
-    return """<!doctype html>
-    <html> 
-        <body>
-            Счетчик посещения страницы """ + str(count) + """
-            <hr>
-            Дата и время: """ + str(time) + """<br>
-            Запрошенный адрес:""" + str(url) + """<br>
-            Ваш IP адрес:""" + str(client_ip) + """<br>
-            <hr>
-            <a href=""" + url_for('reset_counter') + """>Сбросить счетчик</a>
-        </body>
-    </html>"""
-
-@app.route('/lab1/reset_counter')
-def reset_counter():
-    global count
-    count = 0
-    return redirect(url_for('counter'))
-
-@app.route("/lab1/info")
-def info():
-    return redirect("/author")
-
-@app.route("/lab1/created")
-def created():
-    return """<!doctype html>
-    <html> 
-        <body>
-            <h1>Создано успешно</h1>
-            <div><i>Создано</i></div>
-        </body>
-    </html>""", 201
 
 not_found_logs = []
 
