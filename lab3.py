@@ -28,7 +28,41 @@ def del_cookie():
 
 @lab3.route('/lab3/form1')
 def form1():
+    errors = {}
     user = request.args.get('user')
+    if user == '':
+        errors['user'] = 'Заполните имя!'
+    er_age = {}
     age = request.args.get('age')
+    if age == '':
+        er_age['age'] = 'Заполните возраст!'
     sex = request.args.get('sex')
-    return render_template ('lab3/form1.html', user=user, age=age, sex=sex)
+    return render_template('lab3/form1.html', user=user, age=age, sex=sex, errors=errors, er_age=er_age)
+
+
+@lab3.route('/lab3/order')
+def order():
+    return render_template('/lab3/order.html')
+
+
+@lab3.route('/lab3/pay')
+def pay():
+    price = 0
+    drink = request.args.get('drink')
+    if drink == 'cofee':
+        price = 120
+    elif drink == 'black-tea':
+        price = 80
+    else:
+        price = 70
+    if request.args.get('milk') == 'on':
+        price += 30
+    if request.args.get('sugar') == 'on':
+        price += 10
+    return render_template('lab3/pay.html', price=price)
+
+
+@lab3.route('/lab3/payment')
+def payment():
+    price = request.args.get('price')
+    return render_template('lab3/payment.html', price=price)

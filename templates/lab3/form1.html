@@ -17,12 +17,13 @@
     <form>
         <label>Ваше имя:</label>
         <div>
-            <input type="text" placeholder="Как вас зовут?" name="user">
+            <input type="text" placeholder="Как вас зовут?" name="user" value="{{ user}}">
+            <span class="error">{{ errors.user }}</span>
         </div>
-        
-        <label>Ваше возраст:</label>
+        <label>Ваш возраст:</label>
         <div>
-            <input type="number" name="age">
+            <input type="number" name="age" value="{{ age}}">
+            <span class="error">{{ er_age.age }}</span>
         </div>
 
         <label>Ваше пол:</label>
