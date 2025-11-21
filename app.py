@@ -38,7 +38,7 @@ not_found_logs = []
 
 @app.errorhandler(404)
 def not_found(err):
-    path_for_404 = url_for("static", filename="404.jpeg")
+    path_for_404 = url_for("static", filename="lab1/404.jpeg")
     client_ip = request.remote_addr
     access_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     requested_url = request.url

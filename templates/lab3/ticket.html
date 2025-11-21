@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <h1>Железнодорожный билет</h1>
+    
+    {% if show_result %}
+        <div style="border: 2px solid #333; padding: 20px; max-width: 600px; background: #f9f9f9;">
+            <h2 style="text-align: center; color: #d40000;">ЖЕЛЕЗНОДОРОЖНЫЙ БИЛЕТ</h2>
+            
+            <div style="margin-bottom: 10px;">
+                <strong>Пассажир:</strong> {{ fio }}
+            </div>
+            
+            <div style="margin-bottom: 10px;">
+                <strong>Тип билета:</strong> {{ 'Детский билет' if age < 18 else 'Взрослый билет' }}
+            </div>
+            
+            <div style="margin-bottom: 10px;">
+                <strong>Маршрут:</strong> {{ departure }} → {{ destination }}
+            </div>
+            
+            <div style="margin-bottom: 10px;">
+                <strong>Дата поездки:</strong> {{ travel_date }}
+            </div>
+            
+            <div style="margin-bottom: 10px;">
+                <strong>Полка:</strong> 
+                {% if shelf == 'lower' %}Нижняя
+                {% elif shelf == 'upper' %}Верхняя
+                {% elif shelf == 'side_upper' %}Верхняя боковая
+                {% elif shelf == 'side_lower' %}Нижняя боковая
+                {% endif %}
+            </div>
+            
+            <div style="margin-bottom: 10px;">
+                <strong>Дополнительные услуги:</strong>
+                <ul>
+                    {% if linen %}<li>Бельё</li>{% endif %}
+                    {% if luggage %}<li>Багаж</li>{% endif %}
+                    {% if insurance %}<li>Страховка</li>{% endif %}
+                </ul>
+            </div>
+            
+            <div style="border-top: 1px solid #333; padding-top: 10px; margin-top: 15px;">
+                <strong>Стоимость:</strong> {{ price }} руб.
+                <div style="font-size: 12px; color: #666;">
+                    ({{ 'Детский 700 руб' if age < 18 else 'Взрослый 1000 руб' }}
+                    {% if shelf in ['lower', 'side_lower'] %} + 100 руб (полка)
+                    {% endif %}
+                    {% if linen %} + 75 руб (бельё){% endif %}
+                    {% if luggage %} + 250 руб (багаж){% endif %}
+                    {% if insurance %} + 150 руб (страховка){% endif %})
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <a href="/lab3/ticket">Оформить новый билет</a>
+        </div>
+
+    {% else %}
+        {% if errors %}
+            <div style="color: red; background: #ffe6e6; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+                <strong>Исправьте следующие ошибки:</strong>
+                <ul>
+                    {% for error in errors.values() %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <form method="get" action="/lab3/ticket">
+            <div style="margin-bottom: 15px;">
+                <label>ФИО пассажира:</label>
+                <input type="text" name="fio" value="{{ fio or '' }}" style="width: 300px;">
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label>Полка:</label>
+                <select name="shelf">
+                    <option value="lower" {{ 'selected' if shelf == 'lower' }}>Нижняя</option>
+                    <option value="upper" {{ 'selected' if shelf == 'upper' }}>Верхняя</option>
+                    <option value="side_upper" {{ 'selected' if shelf == 'side_upper' }}>Верхняя боковая</option>
+                    <option value="side_lower" {{ 'selected' if shelf == 'side_lower' }}>Нижняя боковая</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label>
+                    <input type="checkbox" name="linen" {{ 'checked' if linen }}> С бельём
+                </label>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label>
+                    <input type="checkbox" name="luggage" {{ 'checked' if luggage }}> С багажом
+                </label>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label>Возраст:</label>
+                <input type="number" name="age" value="{{ age or '' }}" min="1" max="120">
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label>Пункт выезда:</label>
+                <input type="text" name="departure" value="{{ departure or '' }}" style="width: 250px;">
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label>Пункт назначения:</label>
+                <input type="text" name="destination" value="{{ destination or '' }}" style="width: 250px;">
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label>Дата поездки:</label>
+                <input type="date" name="travel_date" value="{{ travel_date or '' }}">
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label>
+                    <input type="checkbox" name="insurance" {{ 'checked' if insurance }}> Нужна страховка
+                </label>
+            </div>
+
+            <div>
+                <button type="submit">Оформить билет</button>
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}

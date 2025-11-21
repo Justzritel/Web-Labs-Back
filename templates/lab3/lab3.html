@@ -7,9 +7,12 @@ html
     <h1>Формы, cookie</h1>
     <div>
         Привет, 
-        <span style='color: {{name_color}}'>
-            {{ name }}
+        <span style='color: {{name_color or "#000000" }}'>
+            {{ name or "аноним" }}
         </span>!
+    </div>
+    <div>
+        Возраст: {{ request.cookies.get('age') or 'не указан' }}
     </div>
     <div>Список сделанных страниц</div>
     <ol>
@@ -17,5 +20,8 @@ html
         <li><a href="/lab3/del_cookie">Очистка куки</a></li>
         <li><a href="/lab3/form1">Форма1</a></li>
         <li><a href="/lab3/order">Заказ</a></li> 
+        <li><a href="/lab3/settings">Настройки</a></li>
+        <li><a href="/lab3/ticket">Билеты</a></li>
+        <li><a href="/lab3/books">Книги</a></li>
     </ol>
 {% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <h1>Книги - поиск по цене</h1>
+    
+    <form method="get" action="/lab3/books">
+        <div style="margin-bottom: 15px;">
+            <label>Минимальная цена:</label>
+            <input type="number" name="min_price" value="{{ min_price or '' }}" 
+                   placeholder="{{ min_price_all }}" min="0">
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label>Максимальная цена:</label>
+            <input type="number" name="max_price" value="{{ max_price or '' }}" 
+                   placeholder="{{ max_price_all }}" min="0">
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <button type="submit">Искать</button>
+            <button type="submit" name="reset" value="1">Сброс</button>
+        </div>
+    </form>
+    
+    {% if message %}
+        <div style="margin: 15px 0; padding: 10px; background: #f0f0f0; border-radius: 5px;">
+            {{ message }}
+        </div>
+    {% endif %}
+    
+    {% if books %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+            {% for book in books %}
+                <div style="border: 1px solid #ddd; padding: 15px; border-radius: 5px; background: white;">
+                    <h3 style="margin-top: 0; color: #0066cc;">{{ book.title }}</h3>
+                    <div><strong>Автор:</strong> {{ book.author }}</div>
+                    <div><strong>Цена:</strong> {{ book.price }} руб.</div>
+                    <div><strong>Год издания:</strong> {{ book.year }}</div>
+                    <div><strong>Жанр:</strong> {{ book.genre }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    {% elif message and 'Не найдено' in message %}
+        <div style="text-align: center; padding: 40px; color: #666;">
+            <h3>{{ message }}</h3>
+            <p>Попробуйте изменить диапазон цен</p>
+        </div>
+    {% endif %}
+    
+    <div style="margin-top: 20px; font-size: 14px; color: #666;">
+        <strong>Диапазон цен в каталоге:</strong> от {{ min_price_all }} до {{ max_price_all }} рублей
+    </div>
+{% endblock %}
