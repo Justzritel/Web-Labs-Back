@@ -130,7 +130,7 @@ def reset_counter():
 
 @lab1.route("/lab1/info")
 def info():
-    return redirect("/author")
+    return redirect("/lab1/author")
 
 
 @lab1.route("/lab1/created")
