@@ -20,6 +20,24 @@ bottom: 0;
 right: 0;
 left: 0;
 }
+h1 {
+    color: #2c3e50;
+    font-size: 2.8em;
+    margin-bottom: 30px;
+    font-weight: 300;
+    letter-spacing: -0.5px;
+}
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
 header{
     background-color: black;
     color: green;
