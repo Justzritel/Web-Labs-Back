@@ -1,14 +1,14 @@
-html
 {% extends "base.html" %}
 
 {% block lab %}Лабораторная работа 3{% endblock %}
 
 {% block main %}
     <h1>Формы, cookie</h1>
+    
     <div>
         Привет, 
-        <span style='color: {{name_color or "#000000" }}'>
-            {{ name or "аноним" }}
+        <span style="color: {{ name_color or '#000000' }}">
+            {{ name or 'аноним' }}
         </span>!
     </div>
     <div>
