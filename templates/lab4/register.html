@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block lab %}Регистрация{% endblock %}
+
+{% block main %}
+    <h1>Регистрация</h1>
+    
+    {% if error %}
+        <div style="color: red; font-weight: bold;">
+            {{ error }}
+        </div>
+    {% endif %}
+    
+    {% if success %}
+        <div style="color: green; font-weight: bold;">
+            {{ success }}
+        </div>
+    {% endif %}
+    
+    <form method="post">
+        <div>
+            <label for="login">Логин:</label>
+            <input type="text" id="login" name="login" required>
+        </div>
+        <div>
+            <label for="name">Имя:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div>
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div>
+            <label for="password_confirm">Подтверждение пароля:</label>
+            <input type="password" id="password_confirm" name="password_confirm" required>
+        </div>
+        <div>
+            <button type="submit">Зарегистрироваться</button>
+        </div>
+    </form>
+    
+    <p><a href="/lab4/">Назад к списку заданий</a></p>
+{% endblock %}
