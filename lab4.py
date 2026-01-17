@@ -1,4 +1,4 @@
-from flask import Blueprint, url_for, redirect,request,render_template,abort,make_response
+from flask import Blueprint, url_for, redirect,request,render_template,abort,make_response,session
 import datetime
 lab4 = Blueprint('lab4', __name__)
 @lab4.route('/lab4/')
@@ -109,3 +109,43 @@ def tree():
             tree_count += 1
     
     return redirect('/lab4/tree')
+users = [
+    {'login': 'alex', 'password': '123', 'name': 'Алексей Петров', 'gender': 'male'},
+    {'login': 'bob', 'password': '555', 'name': 'Боб Марли', 'gender': 'male'},
+    {'login': 'olesya', 'password': '666', 'name': 'Олеся Михайлова', 'gender': 'female'},
+    {'login': 'viktor', 'password': '333', 'name': 'Виктор Пастернак', 'gender': 'male'},
+]
+
+@lab4.route('/lab4/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        if 'login' in session: 
+            for user in users:
+                if user['login'] == session['login']:
+                    return render_template("lab4/login.html", authorized=True, name=user['name'])
+            return render_template("lab4/login.html", authorized=False, login='')
+        else:
+            return render_template("lab4/login.html", authorized=False, login='')
+    
+    login = request.form.get('login')
+    password = request.form.get('password')
+    
+    if not login:
+        error = 'Не введён логин'
+        return render_template('lab4/login.html', error=error, login=login, authorized=False)
+    
+    if not password:
+        error = 'Не введён пароль'
+        return render_template('lab4/login.html', error=error, login=login, authorized=False)
+    
+    for user in users:
+        if login == user['login'] and password == user['password']:
+            session['login'] = login  
+            return redirect('/lab4/login')
+    
+    error = 'Неверный логин или пароль'
+    return render_template('lab4/login.html', error=error, login=login, authorized=False)
+@lab4.route('/lab4/logout')
+def logout():
+    session.pop('login', None)
+    return redirect('/lab4/login')
