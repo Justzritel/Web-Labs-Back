@@ -3,6 +3,7 @@ import datetime
 from lab1 import lab1
 from lab2 import lab2
 from lab3 import lab3
+from lab4 import lab4
 app= Flask(__name__)
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
@@ -25,6 +26,7 @@ def index():
                 <li><a href=""" + url_for('lab1.lab') + """>Первая лабораторная</a></li>
                 <li><a href=""" + url_for('lab2.lab_sec') + """>Вторая лабораторная</a></li>
                 <li><a href=""" + url_for('lab3.lab_th') + """>Третья лабораторная</a></li>
+                <li><a href=""" + url_for('lab4.lab') + """>Четвертая лабораторная</a></li>
             </menu>
         </main>
         <footer>
