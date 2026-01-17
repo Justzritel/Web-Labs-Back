@@ -36,7 +36,7 @@ def index():
                 <li><a href=""" + url_for('lab2.lab_sec') + """>Вторая лабораторная</a></li>
                 <li><a href=""" + url_for('lab3.lab_th') + """>Третья лабораторная</a></li>
                 <li><a href=""" + url_for('lab4.lab') + """>Четвертая лабораторная</a></li>
-            </menu>
+                <li><a href=""" + url_for('lab5.lab') + """>Пятая лабораторная</a></li>
         </main>
         <footer>
             Крадинов Анатолий Иванович, ФБИ-33, 3 курс, 2025
