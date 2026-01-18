@@ -1,0 +1,547 @@
+/* Основные стили для lab9 */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background: linear-gradient(135deg, #1a2a3a, #0d1b2a);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    color: white;
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('/static/lab9/snow-pattern.png');
+    opacity: 0.1;
+    z-index: 0;
+}
+
+.container > * {
+    position: relative;
+    z-index: 2;
+}
+
+h1 {
+    text-align: center;
+    color: #ffd700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    animation: pulse 2s infinite;
+}
+
+/* Информация о пользователе */
+.user-info {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+    text-align: center;
+}
+
+.auth-status {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.auth-status.authenticated {
+    color: #4CAF50;
+    text-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+.auth-status.guest {
+    color: #ff9800;
+    text-shadow: 0 0 5px rgba(255, 152, 0, 0.5);
+}
+
+.auth-hint {
+    background: rgba(255, 152, 0, 0.2);
+    padding: 10px;
+    border-radius: 5px;
+    border-left: 4px solid #ff9800;
+    margin-top: 10px;
+}
+
+.login-link {
+    color: #ffd700;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
+
+/* Статистика */
+.stats {
+    display: flex;
+    justify-content: space-around;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+    align-items: center;
+}
+
+.stat-item {
+    text-align: center;
+    flex: 1;
+}
+
+.stat-label {
+    display: block;
+    color: #a0d2ff;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 2em;
+    font-weight: bold;
+    color: #ffd700;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+/* Прогресс-бар */
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #8BC34A);
+    border-radius: 10px;
+    transition: width 0.5s ease, background-color 0.5s ease;
+    width: 0%;
+}
+
+/* Кнопки действий */
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.action-btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.reset-btn {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    color: white;
+}
+
+.reset-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(255, 75, 43, 0.4);
+}
+
+.santa-btn {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    color: white;
+    animation: pulse 2s infinite;
+}
+
+.santa-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+}
+
+.disabled-btn {
+    background: linear-gradient(135deg, #666, #333);
+    color: #999;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Инструкции */
+.instructions {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    border-left: 4px solid #4CAF50;
+}
+
+.instructions h3 {
+    color: #4CAF50;
+    margin-top: 0;
+}
+
+.instructions ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.instructions li {
+    padding: 8px 0;
+    padding-left: 30px;
+    position: relative;
+}
+
+.instructions li::before {
+    content: '🎁';
+    position: absolute;
+    left: 0;
+}
+
+.auth-required {
+    color: #ff4444;
+    font-weight: bold;
+}
+
+/* Контейнер коробок - ФИКСИРОВАННЫЙ РАЗМЕР */
+.boxes-container {
+    position: relative;
+    width: 850px;
+    height: 450px;
+    margin: 0 auto 30px;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+    border: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Коробки - ФИКСИРОВАННЫЙ РАЗМЕР */
+.box {
+    position: absolute;
+    width: 80px;  /* Фиксированная ширина */
+    height: 80px; /* Фиксированная высота */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.box.closed {
+    animation: pulse 2s infinite;
+}
+
+.box.closed:hover {
+    transform: scale(1.1) rotate(5deg);
+    animation: shake 0.5s infinite;
+}
+
+.box.requires-auth.closed {
+    border: 3px solid #ff4444;
+    border-radius: 10px;
+    animation: glow 1.5s infinite;
+}
+
+.box.auth-pulse {
+    animation: glow 1s infinite;
+}
+
+.box.opened {
+    cursor: default;
+    width: 120px;  /* Фиксированный размер для открытой коробки */
+    height: 120px;
+    border: none;
+    animation: none;
+}
+
+/* Изображения коробок - ФИКСИРОВАННЫЙ РАЗМЕР */
+.box-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Сохраняет пропорции, вписывая в контейнер */
+    filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.5));
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* Изображения подарков - ФИКСИРОВАННЫЙ РАЗМЕР */
+.gift {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Сохраняет пропорции */
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.5));
+    animation: pulse 3s infinite;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.box-number {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 20;
+}
+
+/* Иконка замка - ФИКСИРОВАННЫЙ РАЗМЕР */
+.lock-icon {
+    position: absolute;
+    top: -15px;
+    right: -10px;
+    font-size: 20px; /* Фиксированный размер */
+    color: #ff4444;
+    text-shadow: 0 0 5px rgba(255, 68, 68, 0.5);
+    z-index: 20;
+}
+
+/* Текст поздравления - ФИКСИРОВАННЫЙ РАЗМЕР */
+.congratulation {
+    position: absolute;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 220px; /* Фиксированная ширина */
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 14px; /* Фиксированный размер шрифта */
+    line-height: 1.4;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 100;
+    display: none;
+}
+
+.box.opened:hover .congratulation {
+    opacity: 1;
+    display: block;
+}
+
+/* Легенда */
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 30px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+}
+
+.normal-box {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    border: 2px solid #64B5F6;
+}
+
+.auth-box {
+    background: linear-gradient(135deg, #ff4444, #c62828);
+    border: 2px solid #ff8888;
+    animation: glow 2s infinite;
+}
+
+.opened-box {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    border: 2px solid #81C784;
+}
+
+/* Сообщения - ФИКСИРОВАННЫЙ РАЗМЕР ШРИФТА */
+.message {
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px; /* Фиксированный размер шрифта */
+    animation: fadeIn 0.5s;
+    line-height: 1.5;
+}
+
+.message.success {
+    background: rgba(76, 175, 80, 0.2);
+    border: 2px solid #4CAF50;
+    color: #4CAF50;
+}
+
+.message.error {
+    background: rgba(244, 67, 54, 0.2);
+    border: 2px solid #f44336;
+    color: #f44336;
+}
+
+/* Футер */
+.footer {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    margin-top: 30px;
+    font-size: 16px; /* Фиксированный размер шрифта */
+}
+
+.footer p {
+    margin: 5px 0;
+    color: #a0d2ff;
+    line-height: 1.5;
+}
+
+.footer p:first-child {
+    font-size: 1.2em;
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.register-link, .login-link {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.register-link:hover, .login-link:hover {
+    text-decoration: underline;
+}
+
+/* Анимации */
+@keyframes firework {
+    0% { transform: translate(0, 0); opacity: 1; }
+    100% { transform: translate(var(--tx, 0), var(--ty, 0)); opacity: 0; }
+}
+
+@keyframes fall {
+    0% { transform: translateY(-20px) rotate(0deg); }
+    100% { transform: translateY(100vh) rotate(360deg); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px #ff4444; }
+    50% { box-shadow: 0 0 20px #ff4444; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Снежинки - ФИКСИРОВАННЫЙ РАЗМЕР */
+.snowflake {
+    pointer-events: none;
+    user-select: none;
+    position: absolute;
+    font-size: 16px; /* Фиксированный размер снежинок */
+}
+
+/* Адаптивность */
+@media (max-width: 900px) {
+    .boxes-container {
+        width: 100%;
+        height: 350px;
+    }
+    
+    .box {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .box.opened {
+        width: 90px;
+        height: 90px;
+    }
+    
+    .congratulation {
+        width: 150px;
+        font-size: 12px;
+    }
+    
+    .lock-icon {
+        font-size: 16px;
+        top: -10px;
+        right: -5px;
+    }
+    
+    .stats {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .legend {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .action-btn {
+        width: 100%;
+        max-width: 300px;
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+    
+    h1 {
+        font-size: 2em;
+    }
+    
+    .message {
+        font-size: 14px;
+        padding: 12px;
+    }
+    
+    .footer {
+        font-size: 14px;
+        padding: 15px;
+    }
+}

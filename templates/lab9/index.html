@@ -1,0 +1,981 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 9 - Новогодние подарки{% endblock %}
+
+{% block script %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const santaBtn = document.getElementById('santa-btn');
+    if (santaBtn) {
+        santaBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('🎅 Дед Мороз наполнит все коробки заново! Вы уверены?')) {
+                fetch('/lab9/santa', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'}
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        showConfetti();
+                        setTimeout(() => location.reload(), 1500);
+                    }
+                });
+            }
+        });
+    }
+    
+    // Создаем снежинки
+    function createSnowflakes() {
+        const container = document.getElementById('snowflakes-container');
+        if (!container) return;
+        
+        const snowflakeCount = 80;
+        const snowflakeTypes = ['❄', '❅', '❆', '*'];
+        
+        for (let i = 0; i < snowflakeCount; i++) {
+            const snowflake = document.createElement('div');
+            snowflake.className = 'snowflake';
+            snowflake.innerHTML = snowflakeTypes[Math.floor(Math.random() * snowflakeTypes.length)];
+            
+            const size = Math.random() * 24 + 12;
+            const startX = Math.random() * 100;
+            const duration = Math.random() * 10 + 8;
+            const delay = Math.random() * 5;
+            const opacity = Math.random() * 0.7 + 0.3;
+            
+            snowflake.style.cssText = `
+                position: fixed;
+                color: white;
+                font-size: ${size}px;
+                left: ${startX}vw;
+                top: -30px;
+                opacity: ${opacity};
+                z-index: 9998;
+                pointer-events: none;
+                animation: snowfall ${duration}s linear ${delay}s infinite;
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            `;
+            
+            container.appendChild(snowflake);
+        }
+    }
+    
+    // Функция для создания конфетти
+    function showConfetti() {
+        const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff8800', '#88ff00'];
+        const container = document.body;
+        
+        for (let i = 0; i < 150; i++) {
+            const confetti = document.createElement('div');
+            confetti.style.cssText = `
+                position: fixed;
+                width: ${Math.random() * 10 + 5}px;
+                height: ${Math.random() * 10 + 5}px;
+                background: ${colors[Math.floor(Math.random() * colors.length)]};
+                top: -20px;
+                left: ${Math.random() * 100}vw;
+                border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
+                opacity: ${Math.random() * 0.8 + 0.2};
+                z-index: 9999;
+                pointer-events: none;
+                animation: confetti-fall ${Math.random() * 3 + 2}s ease-in forwards;
+            `;
+            
+            container.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 3000);
+        }
+    }
+    
+    // Добавляем анимации в стили
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes snowfall {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+        
+        @keyframes confetti-fall {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(${Math.random() * 360}deg); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px gold; }
+            50% { box-shadow: 0 0 20px gold, 0 0 30px gold; }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        .christmas-light {
+            animation: twinkle 1.5s infinite;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Создаем огоньки на ёлке (фон)
+    function createChristmasLights() {
+        const container = document.querySelector('.page-background');
+        if (!container) return;
+        
+        const lightColors = ['#ff0000', '#00ff00', '#ffff00', '#ff00ff', '#00ffff', '#ff8800'];
+        
+        // Позиции для огоньков
+        const positions = [
+            {top: '15%', left: '10%'}, {top: '20%', left: '20%'}, {top: '25%', left: '30%'},
+            {top: '30%', left: '15%'}, {top: '35%', left: '25%'}, {top: '40%', left: '35%'},
+            {top: '45%', left: '20%'}, {top: '50%', left: '30%'}, {top: '55%', left: '10%'},
+            {top: '60%', left: '40%'}, {top: '65%', left: '25%'}, {top: '70%', left: '35%'}
+        ];
+        
+        positions.forEach((pos, index) => {
+            const light = document.createElement('div');
+            light.className = 'christmas-light';
+            light.style.cssText = `
+                position: fixed;
+                width: 8px;
+                height: 8px;
+                background: ${lightColors[index % lightColors.length]};
+                border-radius: 50%;
+                top: ${pos.top};
+                left: ${pos.left};
+                z-index: 1;
+                box-shadow: 0 0 10px ${lightColors[index % lightColors.length]};
+            `;
+            container.appendChild(light);
+            
+            // Случайная задержка для мерцания
+            light.style.animationDelay = `${Math.random() * 2}s`;
+        });
+    }
+    
+    // Добавляем анимацию при наведении на коробки
+    document.querySelectorAll('.gift-item.closed').forEach(box => {
+        box.addEventListener('mouseenter', function() {
+            this.style.animation = 'bounce 0.5s ease, glow 2s infinite';
+        });
+        
+        box.addEventListener('mouseleave', function() {
+            this.style.animation = '';
+        });
+        
+        box.addEventListener('click', function() {
+            this.style.animation = 'shake 0.5s ease';
+            setTimeout(() => {
+                this.style.animation = '';
+            }, 500);
+        });
+    });
+    
+    // Инициализация
+    createSnowflakes();
+    createChristmasLights();
+});
+</script>
+{% endblock %}
+
+{% block main %}
+<style>
+    /* Основные стили */
+    :root {
+        --gold: #ffd700;
+        --red: #c62828;
+        --green: #2e7d32;
+        --blue: #1565c0;
+        --silver: #b0bec5;
+    }
+    
+    .page-background {
+        background: 
+            linear-gradient(135deg, #0d47a1 0%, #311b92 100%),
+            url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="white" opacity="0.3"/></svg>'),
+            radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%);
+        background-size: cover, 100px 100px, cover, cover;
+        min-height: 100vh;
+        padding: 30px 20px;
+        position: relative;
+        overflow-x: hidden;
+    }
+    
+    .content-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 25px;
+        box-shadow: 
+            0 20px 60px rgba(0, 0, 0, 0.3),
+            inset 0 0 100px rgba(255, 215, 0, 0.1),
+            0 0 50px rgba(255, 215, 0, 0.2);
+        border: 5px solid var(--gold);
+        position: relative;
+        z-index: 2;
+        backdrop-filter: blur(10px);
+    }
+    
+    .content-container::before {
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        background: linear-gradient(45deg, var(--gold), var(--red), var(--green), var(--blue), var(--gold));
+        border-radius: 35px;
+        z-index: -1;
+        opacity: 0.3;
+        animation: gradient-border 10s infinite linear;
+    }
+    
+    @keyframes gradient-border {
+        0% { filter: hue-rotate(0deg); }
+        100% { filter: hue-rotate(360deg); }
+    }
+    
+    /* Заголовок */
+    .main-title {
+        text-align: center;
+        font-size: 3.5rem;
+        color: var(--red);
+        margin-bottom: 40px;
+        text-shadow: 
+            3px 3px 0 var(--gold),
+            6px 6px 0 rgba(0, 0, 0, 0.2);
+        font-family: 'Georgia', serif;
+        position: relative;
+        padding-bottom: 20px;
+    }
+    
+    .main-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 25%;
+        right: 25%;
+        height: 4px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    
+    /* Блок пользователя */
+    .user-info-container {
+        background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 40px;
+        border: 3px solid var(--blue);
+        box-shadow: 0 10px 30px rgba(33, 150, 243, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .user-info-container::before {
+        content: '🎄 🎅 🎁';
+        position: absolute;
+        top: -15px;
+        right: 20px;
+        font-size: 2rem;
+        opacity: 0.3;
+    }
+    
+    .user-status {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+    
+    .user-greeting {
+        font-size: 1.8rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .auth-status {
+        padding: 8px 20px;
+        border-radius: 25px;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+    
+    .auth-status.authenticated {
+        background: linear-gradient(135deg, #4CAF50, #2E7D32);
+        color: white;
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    }
+    
+    .auth-status.guest {
+        background: linear-gradient(135deg, #FF9800, #F57C00);
+        color: white;
+        box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+    }
+    
+    .auth-buttons {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+    
+    /* Кнопки */
+    .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+    
+    .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-login {
+        background: linear-gradient(135deg, #2196F3, #0D47A1);
+        color: white;
+    }
+    
+    .btn-register {
+        background: linear-gradient(135deg, #4CAF50, #1B5E20);
+        color: white;
+    }
+    
+    .btn-logout {
+        background: linear-gradient(135deg, #F44336, #B71C1C);
+        color: white;
+    }
+    
+    .btn-santa {
+        background: linear-gradient(135deg, #FF9800, #E65100);
+        color: white;
+        font-size: 1.3rem;
+        padding: 15px 35px;
+        margin: 20px auto;
+        display: block;
+        border: 3px solid var(--gold);
+        animation: glow 2s infinite;
+    }
+    
+    .btn-santa:hover {
+        animation: bounce 0.5s infinite;
+    }
+    
+    /* Статистика */
+    .stats-container {
+        display: flex;
+        justify-content: center;
+        gap: 50px;
+        margin: 30px 0;
+        flex-wrap: wrap;
+    }
+    
+    .stat-item {
+        text-align: center;
+        padding: 20px;
+        background: white;
+        border-radius: 15px;
+        min-width: 180px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        border: 2px solid var(--silver);
+        transition: transform 0.3s ease;
+    }
+    
+    .stat-item:hover {
+        transform: translateY(-5px);
+        border-color: var(--gold);
+    }
+    
+    .stat-label {
+        display: block;
+        color: #666;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+    
+    .stat-value {
+        font-size: 3rem;
+        font-weight: bold;
+        color: var(--blue);
+        text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Сетка подарков */
+    .gifts-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 30px;
+        margin: 50px 0;
+        padding: 30px;
+        background: rgba(255, 248, 225, 0.5);
+        border-radius: 20px;
+        border: 3px dashed var(--gold);
+    }
+    
+    .gift-item {
+        position: relative;
+        text-align: center;
+        transition: all 0.3s ease;
+        padding: 20px 10px;
+        border-radius: 15px;
+        background: white;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .gift-item.closed:hover {
+        transform: scale(1.05) rotate(3deg);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
+    
+    .gift-item.opened {
+        background: linear-gradient(135deg, #f1f8e9, #dcedc8);
+        border: 3px solid var(--green);
+    }
+    
+    .gift-item.locked {
+        background: linear-gradient(135deg, #ffebee, #ffcdd2);
+        border: 3px solid var(--red);
+        opacity: 0.9;
+    }
+    
+    .gift-image-container {
+        width: 160px;
+        height: 160px;
+        margin: 0 auto 20px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        overflow: hidden;
+        background: white;
+        padding: 15px;
+    }
+    
+    .gift-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+    }
+    
+    .gift-item:hover .gift-image {
+        transform: scale(1.1);
+    }
+    
+    .gift-number {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: var(--blue);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        z-index: 2;
+    }
+    
+    .gift-status-icon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        z-index: 2;
+    }
+    
+    .status-open {
+        background: var(--green);
+        color: white;
+    }
+    
+    .status-locked {
+        background: var(--red);
+        color: white;
+        animation: pulse 2s infinite;
+    }
+    
+    .gift-title {
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin: 25px 0 10px;
+        color: #333;
+        text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        padding: 0 10px;
+        min-height: 3em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .gift-status {
+        font-size: 1.1rem;
+        font-weight: bold;
+        padding: 8px 15px;
+        border-radius: 20px;
+        display: inline-block;
+        margin-top: 10px;
+    }
+    
+    .status-available {
+        background: var(--blue);
+        color: white;
+    }
+    
+    .status-unavailable {
+        background: var(--red);
+        color: white;
+    }
+    
+    .status-opened {
+        background: var(--green);
+        color: white;
+    }
+    
+    /* Легенда */
+    .legend-container {
+        background: linear-gradient(135deg, #fff8e1, #ffecb3);
+        border-radius: 20px;
+        padding: 30px;
+        margin: 40px 0;
+        border: 3px solid var(--gold);
+    }
+    
+    .legend-title {
+        text-align: center;
+        font-size: 2rem;
+        color: var(--red);
+        margin-bottom: 25px;
+        font-family: 'Georgia', serif;
+    }
+    
+    .legend-items {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        flex-wrap: wrap;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 25px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .legend-color {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 3px solid;
+    }
+    
+    .legend-text {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    /* Футер */
+    .footer-container {
+        text-align: center;
+        padding: 40px 20px;
+        margin-top: 50px;
+        background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+        border-radius: 20px;
+        border: 3px solid var(--green);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .footer-container::before {
+        content: '🎄 🎅 🎁 ✨';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        transform: translateY(-50%);
+        font-size: 4rem;
+        opacity: 0.1;
+        z-index: 1;
+    }
+    
+    .footer-message {
+        font-size: 2rem;
+        color: var(--green);
+        margin-bottom: 20px;
+        font-weight: bold;
+        position: relative;
+        z-index: 2;
+        text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+    }
+    
+    .footer-text {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 15px;
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* Flash сообщения */
+    .flash-messages {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        max-width: 400px;
+    }
+    
+    .flash-message {
+        padding: 20px 25px;
+        margin-bottom: 15px;
+        border-radius: 15px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        animation: slideIn 0.5s ease;
+        border-left: 5px solid;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .flash-message::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: inherit;
+        opacity: 0.5;
+    }
+    
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .flash-success {
+        background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+        color: #2e7d32;
+        border-left-color: #4CAF50;
+    }
+    
+    .flash-error {
+        background: linear-gradient(135deg, #ffcdd2, #ef9a9a);
+        color: #c62828;
+        border-left-color: #f44336;
+    }
+    
+    /* Адаптивность */
+    @media (max-width: 1200px) {
+        .gifts-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+    }
+    
+    @media (max-width: 900px) {
+        .gifts-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .content-container {
+            padding: 25px;
+        }
+        
+        .main-title {
+            font-size: 2.8rem;
+        }
+    }
+    
+    @media (max-width: 600px) {
+        .gifts-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 15px;
+        }
+        
+        .gift-image-container {
+            width: 130px;
+            height: 130px;
+        }
+        
+        .main-title {
+            font-size: 2.2rem;
+        }
+        
+        .user-status {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .auth-buttons {
+            justify-content: center;
+        }
+        
+        .stats-container {
+            gap: 20px;
+        }
+        
+        .stat-item {
+            min-width: 140px;
+            padding: 15px;
+        }
+    }
+    
+    @media (max-width: 400px) {
+        .gifts-grid {
+            grid-template-columns: repeat(1, 1fr);
+        }
+        
+        .gift-image-container {
+            width: 180px;
+            height: 180px;
+        }
+    }
+</style>
+
+<div class="page-background">
+    <!-- Контейнер для снежинок -->
+    <div id="snowflakes-container"></div>
+    
+    <!-- Flash сообщения -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <div class="content-container">
+        <h1 class="main-title">✨ Новогодние Чудеса ✨</h1>
+        
+        <!-- Информация о пользователе -->
+        <div class="user-info-container">
+            <div class="user-status">
+                <div class="user-greeting">
+                    <span>
+                        {% if is_authenticated %}
+                            🎅 Привет, <span style="color: var(--red);">{{ username }}</span>!
+                        {% else %}
+                            🎄 Добро пожаловать, <span style="color: var(--blue);">Гость</span>!
+                        {% endif %}
+                    </span>
+                    <span class="auth-status {% if is_authenticated %}authenticated{% else %}guest{% endif %}">
+                        {% if is_authenticated %}Авторизован{% else %}Гость{% endif %}
+                    </span>
+                </div>
+                
+                <div class="auth-buttons">
+                    {% if is_authenticated %}
+                        <a href="/lab9/logout" class="btn btn-logout">
+                            🚪 Выйти
+                        </a>
+                    {% else %}
+                        <a href="/lab9/login" class="btn btn-login">
+                            🔑 Войти
+                        </a>
+                        <a href="/lab9/register" class="btn btn-register">
+                            📝 Регистрация
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Статистика -->
+            <div class="stats-container">
+                <div class="stat-item">
+                    <span class="stat-label">Открыто подарков</span>
+                    <div>
+                        <span class="stat-value">{{ opened_count }}</span>
+                        <span style="font-size: 1.5rem; color: #666;">/{{ max_boxes }}</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Всего подарков</span>
+                    <div>
+                        <span class="stat-value" style="color: var(--green);">10</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Статус</span>
+                    <div style="font-size: 1.5rem; color: {% if is_authenticated %}var(--green){% else %}var(--orange){% endif %}; font-weight: bold;">
+                        {% if is_authenticated %}Премиум{% else %}Базовый{% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            {% if is_authenticated %}
+                <button id="santa-btn" class="btn btn-santa">
+                    🎅 Вызвать Деда Мороза
+                </button>
+            {% endif %}
+            
+            {% if not is_authenticated %}
+                <div style="text-align: center; padding: 15px; background: #fff3cd; border-radius: 10px; margin-top: 20px; border-left: 4px solid #ff9800;">
+                    <span style="font-weight: bold; color: #e65100;">⚠️ Внимание!</span>
+                    <p style="margin: 10px 0; color: #5d4037;">
+                        Для доступа к эксклюзивным подаркам (6-10) требуется авторизация
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Сетка подарков -->
+        <div class="gifts-grid">
+            {% for box in boxes %}
+                <div class="gift-item {% if box.opened %}opened{% elif box.requires_auth and not is_authenticated %}locked{% else %}closed{% endif %}"
+                     {% if not box.opened and not (box.requires_auth and not is_authenticated) %}
+                        onclick="window.location.href='/lab9/open/{{ box.index }}'"
+                        style="cursor: pointer;"
+                     {% endif %}>
+                    
+                    <div class="gift-number">{{ box.index + 1 }}</div>
+                    
+                    <div class="gift-image-container">
+                        {% if box.opened %}
+                            <img src="/static/lab9/gifts/gift{{ box.index + 1 }}.png" 
+                                 alt="Подарок {{ box.index + 1 }}" 
+                                 class="gift-image">
+                            <div class="gift-status-icon status-open">
+                                ✓
+                            </div>
+                        {% else %}
+                            <img src="/static/lab9/box.png" 
+                                 alt="Коробка" 
+                                 class="gift-image">
+                            {% if box.requires_auth and not is_authenticated %}
+                                <div class="gift-status-icon status-locked">
+                                    🔒
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="gift-title">
+                        {% if box.opened %}
+                            <span>Открыт</span>
+                        {% elif box.requires_auth and not is_authenticated %}
+                            <span>Заблокирован</span>
+                        {% else %}
+                            <span>Доступен</span>
+                        {% endif %}
+                    </div>
+                    
+                    {% if box.opened %}
+                        <a href="/lab9/view/{{ box.index }}" 
+                           class="btn"
+                           style="background: var(--green); color: white; padding: 8px 15px; font-size: 0.9rem; margin-top: 10px;">
+                            👀 Посмотреть
+                        </a>
+                    {% endif %}
+                    
+                    <div class="gift-status 
+                        {% if box.opened %}status-opened
+                        {% elif box.requires_auth and not is_authenticated %}status-unavailable
+                        {% else %}status-available{% endif %}">
+                        {% if box.opened %}
+                            Открыт
+                        {% elif box.requires_auth and not is_authenticated %}
+                            Недоступен
+                        {% else %}
+                            Доступен
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Легенда -->
+        <div class="legend-container">
+            <h2 class="legend-title">📊 Состояние подарков</h2>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--blue); border-color: var(--blue);"></div>
+                    <span class="legend-text">Доступные подарки</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--red); border-color: var(--red);"></div>
+                    <span class="legend-text">Недоступные подарки</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--green); border-color: var(--green);"></div>
+                    <span class="legend-text">Открытые подарки</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Футер -->
+        <div class="footer-container">
+            <div class="footer-message">
+                🎄 С Наступающим Новым Годом! 🎄
+            </div>
+            <div class="footer-text">
+                Пусть этот год принесет вам радость, счастье и исполнение всех желаний!
+            </div>
+            {% if not is_authenticated %}
+                <div style="margin-top: 20px;">
+                    <a href="/lab9/register" class="btn btn-register" style="display: inline-block; margin: 5px;">
+                        🎁 Зарегистрироваться
+                    </a>
+                    <a href="/lab9/login" class="btn btn-login" style="display: inline-block; margin: 5px;">
+                        🔓 Войти в систему
+                    </a>
+                </div>
+            {% endif %}
+            <div style="margin-top: 30px; color: #666; font-size: 0.9rem;">
+                ❄️ Система новогодних подарков • 2025 ❄️
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
