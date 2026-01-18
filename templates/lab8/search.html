@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8 - Поиск статей{% endblock %}
+
+{% block main %}
+    <div class="knowledge-base">
+        <h1>Поиск статей</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" style="margin-bottom: 15px;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <nav class="top-menu">
+            <a href="/lab8/articles/public/" class="menu-item">Публичные статьи</a>
+            <a href="/lab8/articles/search/" class="menu-item active">Поиск</a>
+            
+            {% if username != 'anonymous' %}
+                <a href="/lab8/articles/" class="menu-item">Мои статьи</a>
+                <a href="/lab8/articles/create/" class="menu-item">Создать статью</a>
+                <a href="/lab8/logout" class="menu-item">Выйти</a>
+                <div class="user-display">{{ username }}</div>
+            {% else %}
+                <a href="/lab8/login" class="menu-item">Войти</a>
+                <a href="/lab8/register" class="menu-item">Регистрация</a>
+                <div class="user-display">Anonymous</div>
+            {% endif %}
+        </nav>
+        
+        <div style="max-width: 800px; margin: 0 auto;">
+            <form method="POST" action="/lab8/articles/search/" style="margin-bottom: 30px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <input type="text" name="search_query" 
+                           placeholder="Введите поисковый запрос (по заголовку или тексту статьи)" 
+                           value="{{ search_query or '' }}"
+                           style="flex-grow: 1; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px;">
+                    <button type="submit" 
+                            style="padding: 12px 30px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
+                        Искать
+                    </button>
+                </div>
+            </form>
+            
+            {% if error %}
+                <div style="color: #d32f2f; background-color: #ffebee; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #d32f2f;">
+                    <strong>Ошибка:</strong> {{ error }}
+                </div>
+            {% endif %}
+            
+            {% if search_query is defined %}
+                <div style="margin-bottom: 20px; color: #666;">
+                    <h2 style="margin-bottom: 10px;">
+                        Результаты поиска для "{{ search_query }}"
+                    </h2>
+                    {% if results_count is defined %}
+                        <p>Найдено статей: {{ results_count }}</p>
+                    {% endif %}
+                </div>
+                
+                {% if articles and articles|length > 0 %}
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                        {% for article in articles %}
+                            <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; background-color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                <h3 style="margin-top: 0; color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 10px;">
+                                    {{ article.title }}
+                                </h3>
+                                
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; color: #666;">
+                                    <span>
+                                        <strong>Автор:</strong> {{ article.author }}
+                                    </span>
+                                    <span>
+                                        <strong>Лайков:</strong> {{ article.likes }}
+                                    </span>
+                                </div>
+                                
+                                <div style="margin-bottom: 15px; line-height: 1.6;">
+                                    {% if article.article_text|length > 200 %}
+                                        {{ article.article_text[:200] }}...
+                                        <a href="/lab8/articles/{{ article.id }}/" style="color: #2196F3; text-decoration: none;">читать далее</a>
+                                    {% else %}
+                                        {{ article.article_text }}
+                                    {% endif %}
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; font-size: 14px; color: #666;">
+                                    <div>
+                                        {% if article.is_favorite %}
+                                            <span style="color: #FF9800;">★ Избранная</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div>
+                                        <a href="/lab8/articles/{{ article.id }}/" 
+                                           style="color: #2196F3; text-decoration: none; padding: 5px 10px; border: 1px solid #2196F3; border-radius: 4px;">
+                                            Подробнее
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div style="text-align: center; padding: 40px; background-color: #f8f9fa; border-radius: 8px; margin-top: 20px;">
+                        <h3 style="color: #666;">По вашему запросу ничего не найдено</h3>
+                        <p>Попробуйте изменить поисковый запрос или просмотрите <a href="/lab8/articles/public/">публичные статьи</a>.</p>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div style="text-align: center; padding: 40px; background-color: #f8f9fa; border-radius: 8px; margin-top: 20px;">
+                    <h3 style="color: #666;">Поиск по статьям</h3>
+                    <p>Введите поисковый запрос в поле выше. Поиск будет выполняться по заголовкам и текстам публичных статей.</p>
+                    
+                    <div style="margin-top: 20px; text-align: left; background-color: white; padding: 20px; border-radius: 5px; border-left: 4px solid #4CAF50;">
+                        <h4 style="margin-top: 0;">Советы по поиску:</h4>
+                        <ul style="margin-bottom: 0;">
+                            <li>Используйте ключевые слова</li>
+                            <li>Поиск не чувствителен к регистру</li>
+                            <li>Поиск ведется только по публичным статьям</li>
+                            <li>Для поиска в своих статьях перейдите в раздел "Мои статьи"</li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <div style="margin-top: 30px; text-align: center;">
+                <a href="/lab8/articles/public/" 
+                   style="color: #666; text-decoration: none; padding: 10px 20px; border: 1px solid #ddd; border-radius: 4px; margin-right: 10px;">
+                    ← К публичным статьям
+                </a>
+                <a href="/lab8/" 
+                   style="color: #666; text-decoration: none; padding: 10px 20px; border: 1px solid #ddd; border-radius: 4px;">
+                    На главную
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

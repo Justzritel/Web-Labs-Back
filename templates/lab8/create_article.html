@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8 - Создание статьи{% endblock %}
+
+{% block main %}
+    <div class="knowledge-base">
+        <h1>Создание новой статьи</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" style="margin-bottom: 15px;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <nav class="top-menu">
+            <a href="/lab8/articles/public/" class="menu-item">Публичные статьи</a>
+            <a href="/lab8/articles/search/" class="menu-item">Поиск</a>
+            
+            {% if username != 'anonymous' %}
+                <a href="/lab8/articles/" class="menu-item">Мои статьи</a>
+                <a href="/lab8/articles/create/" class="menu-item active">Создать статью</a>
+                <a href="/lab8/logout" class="menu-item">Выйти</a>
+                <div class="user-display">{{ username }}</div>
+            {% else %}
+                <a href="/lab8/login" class="menu-item">Войти</a>
+                <a href="/lab8/register" class="menu-item">Регистрация</a>
+                <div class="user-display">Anonymous</div>
+            {% endif %}
+        </nav>
+        
+        <div style="max-width: 800px; margin: 30px auto;">
+            {% if error %}
+                <div style="color: #d32f2f; background-color: #ffebee; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #d32f2f;">
+                    <strong>Ошибка:</strong> {{ error }}
+                </div>
+            {% endif %}
+            
+            <form method="POST" action="/lab8/articles/create/">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">
+                        Заголовок статьи <span style="color: #d32f2f;">*</span>
+                    </label>
+                    <input type="text" name="title" required 
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                           placeholder="Введите заголовок (максимум 50 символов)"
+                           maxlength="50">
+                    <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                        Максимум 50 символов
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">
+                        Текст статьи <span style="color: #d32f2f;">*</span>
+                    </label>
+                    <textarea name="article_text" required 
+                              style="width: 100%; height: 300px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit;"
+                              placeholder="Введите текст вашей статьи здесь..."></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 30px; margin-bottom: 30px;">
+                    <div>
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="checkbox" name="is_favorite" style="margin-right: 8px;">
+                            <span>Добавить в избранное</span>
+                        </label>
+                        <div style="font-size: 12px; color: #666; margin-top: 5px; margin-left: 24px;">
+                            Статья будет отмечена как избранная
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="checkbox" name="is_public" checked style="margin-right: 8px;">
+                            <span>Сделать статью публичной</span>
+                        </label>
+                        <div style="font-size: 12px; color: #666; margin-top: 5px; margin-left: 24px;">
+                            Статью смогут увидеть другие пользователи
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 15px;">
+                    <button type="submit" 
+                            style="padding: 12px 30px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
+                        Создать статью
+                    </button>
+                    
+                    <a href="/lab8/articles/" 
+                       style="padding: 12px 30px; background-color: #f5f5f5; color: #333; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; display: inline-block;">
+                        Отмена
+                    </a>
+                    
+                    <a href="/lab8/" 
+                       style="padding: 12px 30px; background-color: #e0e0e0; color: #333; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; display: inline-block;">
+                        На главную
+                    </a>
+                </div>
+            </form>
+            
+            <div style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 5px;">
+                <h3 style="margin-top: 0; color: #333;">Советы по созданию статьи:</h3>
+                <ul style="margin-bottom: 0;">
+                    <li>Заголовок должен быть кратким и информативным</li>
+                    <li>Используйте чёткую структуру текста (абзацы, списки)</li>
+                    <li>Публичные статьи видны всем пользователям системы</li>
+                    <li>Избранные статьи можно быстро найти в списке ваших статей</li>
+                    <li>После создания статью можно будет редактировать или удалить</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -98,8 +98,26 @@ def login():
 
 @lab8.route('/lab8/articles/')
 @login_required
-def article_list():
-    return "Список статей"
+def my_articles():
+    # Получаем статьи текущего пользователя
+    user_articles = articles.query.filter_by(login_id=current_user.id).all()
+    
+    # Преобразуем в список для удобства работы в шаблоне
+    articles_list = []
+    for article in user_articles:
+        articles_list.append({
+            'id': article.id,
+            'title': article.title,
+            'article_text': article.article_text,
+            'is_favorite': article.is_favorite,
+            'is_public': article.is_public,
+            'likes': article.likes,
+            'login_id': article.login_id
+        })
+    
+    return render_template('lab8/my_articles.html', 
+                          articles=articles_list, 
+                          username=current_user.login)
 
 @lab8.route('/lab8/logout')
 @login_required
@@ -226,3 +244,78 @@ def delete_article(article_id):
         db.session.rollback()
         flash(f"Ошибка при удалении статьи: {str(e)}", "error")
         return redirect('/lab8/articles/')
+    
+@lab8.route('/lab8/articles/public/')
+def public_articles():
+    # Получаем публичные статьи вместе с информацией об авторах через join
+    public_articles_list = db.session.query(
+        articles, users.login
+    ).join(
+        users, articles.login_id == users.id
+    ).filter(
+        articles.is_public == True
+    ).all()
+    
+    # Преобразуем результат в удобный формат
+    articles_data = []
+    for article, author_login in public_articles_list:
+        articles_data.append({
+            'id': article.id,
+            'title': article.title,
+            'article_text': article.article_text,
+            'is_favorite': article.is_favorite,
+            'is_public': article.is_public,
+            'likes': article.likes,
+            'author': author_login,
+            'login_id': article.login_id
+        })
+    
+    return render_template('lab8/public_articles.html', articles=articles_data)
+
+@lab8.route('/lab8/articles/search/', methods=['GET', 'POST'])
+def search_articles():
+    if request.method == 'GET':
+        return render_template('lab8/search.html')
+    
+    search_query = request.form.get('search_query', '').strip()
+    if not search_query:
+        return render_template('lab8/search.html', error="Введите поисковый запрос")
+    
+    try:
+        # Используем join для получения информации об авторе
+        search_results = db.session.query(
+            articles, users.login
+        ).join(
+            users, articles.login_id == users.id
+        ).filter(
+            db.or_(
+                articles.title.ilike(f'%{search_query}%'),
+                articles.article_text.ilike(f'%{search_query}%')
+            ),
+            articles.is_public == True
+        ).all()
+        
+        # Преобразуем результат в удобный формат
+        articles_data = []
+        for article, author_login in search_results:
+            articles_data.append({
+                'id': article.id,
+                'title': article.title,
+                'article_text': article.article_text,
+                'is_favorite': article.is_favorite,
+                'is_public': article.is_public,
+                'likes': article.likes,
+                'author': author_login,
+                'login_id': article.login_id
+            })
+        
+        return render_template('lab8/search.html', 
+                              articles=articles_data, 
+                              search_query=search_query,
+                              results_count=len(articles_data))
+        
+    except Exception as e:
+        return render_template('lab8/search.html', 
+                              error=f"Ошибка при поиске: {str(e)}")
+    
+
