@@ -14,17 +14,17 @@ function fillFilmList() {
             let tdYear = document.createElement('td');
             let tdActions = document.createElement('td');
             
-            // Русское название (основное)
             tdTitleRus.innerText = films[i].title_ru;
             
             // Английское название (второстепенное)
-            if (films[i].title && films[i].title !== films[i].title_ru) {
+            if (films[i].title) {
                 let span = document.createElement('span');
                 span.className = 'original-name';
-                span.innerText = films[i].title;
+                span.innerText = `(${films[i].title})`;  // Добавляем скобки
                 tdTitle.appendChild(span);
             }
             
+        
             tdYear.innerText = films[i].year;
             
             // Создаем кнопки
@@ -45,12 +45,11 @@ function fillFilmList() {
             tdActions.appendChild(delButton);
             
             // Добавляем ячейки в строку в правильном порядке
-            tr.append(tdTitleRus);       // 1. Русское название
-            tr.append(tdTitle);          // 2. Английское название
-            tr.append(tdYear);           // 3. Год
-            tr.append(tdActions);        // 4. Действия
+            tr.append(tdTitle);     // 1. Оригинальное название
+            tr.append(tdTitleRus);  // 2. Русское название
+            tr.append(tdYear);      // 3. Год
+            tr.append(tdActions);   // 4. Действия
             
-            // Добавляем строку в таблицу
             tbody.append(tr);
         }
     })
