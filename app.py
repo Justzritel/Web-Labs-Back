@@ -3,6 +3,7 @@ import os
 from os import path
 from flask_sqlalchemy import SQLAlchemy
 from db import db
+from db.models import users
 from flask_login import LoginManager
 
 import datetime
