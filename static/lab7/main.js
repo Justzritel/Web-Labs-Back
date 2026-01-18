@@ -1,4 +1,3 @@
-// Основная функция для заполнения списка фильмов
 function fillFilmList() {
     fetch('/lab7/rest-api/films/')
     .then(function (data) {
@@ -10,8 +9,8 @@ function fillFilmList() {
         
         for(let i = 0; i < films.length; i++) {
             let tr = document.createElement('tr');
-            let tdTitleRus = document.createElement('td'); // Русское название ПЕРВОЕ
-            let tdTitle = document.createElement('td');    // Английское название ВТОРОЕ
+            let tdTitleRus = document.createElement('td'); 
+            let tdTitle = document.createElement('td');    
             let tdYear = document.createElement('td');
             let tdActions = document.createElement('td');
             
@@ -62,7 +61,7 @@ function fillFilmList() {
 
 // Функция удаления фильма
 function deleteFilm(id, title) {
-    if(!confirm(`Вы точно хотите удалить фильм "${title}"?`))
+    if(!confirm(`Вы уверены, что хотите удалить фильм "${title}"?`))
         return;
     
     fetch(`/lab7/rest-api/films/${id}`, {method: 'DELETE'})
@@ -89,9 +88,8 @@ function addFilm() {
     document.querySelector('.modal').style.display = 'block';
 }
 
-// Показываем модальное окно для редактирования существующего фильма
 function editFilm(id) {
-    // Очищаем все ошибки
+
     document.querySelectorAll('.error').forEach(el => el.innerText = '');
     
     // Загружаем данные фильма с сервера
