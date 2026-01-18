@@ -5,6 +5,7 @@ lab7 = Blueprint('lab7', __name__)
 @lab7.route('/lab7/')
 def lab():
     return render_template('lab7/index.html')
+
 films = [
     {
         "title": "The Matrix",
@@ -78,11 +79,10 @@ def get_film(id):
     if id < 0 or id >= len(films):
         return '', 404
 
-    return films[id]
+    return jsonify(films[id])
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['DELETE'])
 def del_film(id):
-
     if id < 0 or id >= len(films):
         return '', 404
     
@@ -91,11 +91,55 @@ def del_film(id):
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['PUT'])
 def put_film(id):
+    if id < 0 or id >= len(films):
+        return '', 404
+    
     film = request.get_json()
-    if film['description'] == '':
-        return {'description': 'Заполните описание'}, 400
-    films[id] = film
-    return films[id]
+    
+    if not film:
+        return '', 400
+    
+    # Проверка обязательных полей
+    required_fields = ['title', 'title_ru', 'year', 'description']
+    for field in required_fields:
+        if field not in film:
+            return jsonify({field: 'Это поле обязательно для заполнения'}), 400
+    
+    # Валидация данных
+    errors = {}
+    
+    # Проверка оригинального названия: если пустое, использовать русское название
+    if not film.get('title') or str(film['title']).strip() == '':
+        film['title'] = film['title_ru']
+    
+    # Проверка русского названия
+    if not film.get('title_ru') or str(film['title_ru']).strip() == '':
+        errors['title_ru'] = 'Русское название не может быть пустым'
+    
+    # Проверка года
+    try:
+        year = int(film['year'])
+        if year < 1888 or year > 2100:  # Первый фильм был в 1888
+            errors['year'] = 'Некорректный год выпуска'
+    except (ValueError, TypeError):
+        errors['year'] = 'Год должен быть числом'
+    
+    # Проверка описания
+    if not film.get('description') or str(film['description']).strip() == '':
+        errors['description'] = 'Описание не может быть пустым'
+    
+    if errors:
+        return jsonify(errors), 400
+    
+    # Обновление фильма
+    films[id] = {
+        'title': film['title'],
+        'title_ru': film['title_ru'],
+        'year': int(film['year']),
+        'description': film['description']
+    }
+    
+    return jsonify(films[id])
 
 @lab7.route('/lab7/rest-api/films/', methods=['POST'])
 def add_film():
@@ -104,17 +148,47 @@ def add_film():
     if not data:
         return '', 400
     
-    required_fields = ['title', 'title_ru', 'year', 'description']
+    # Проверка обязательных полей
+    required_fields = ['title_ru', 'year', 'description']
     for field in required_fields:
         if field not in data:
-            return f'Missing required field: {field}', 400
+            return jsonify({field: 'Это поле обязательно для заполнения'}), 400
     
+    # Валидация данных
+    errors = {}
+    
+    # Проверка оригинального названия: если пустое или не передано, использовать русское название
+    if not data.get('title') or str(data.get('title', '')).strip() == '':
+        data['title'] = data['title_ru']
+    
+    # Проверка русского названия
+    if not data.get('title_ru') or str(data['title_ru']).strip() == '':
+        errors['title_ru'] = 'Русское название не может быть пустым'
+    
+    # Проверка года
+    try:
+        year = int(data['year'])
+        if year < 1888 or year > 2100:  # Первый фильм был в 1888
+            errors['year'] = 'Некорректный год выпуска'
+    except (ValueError, TypeError):
+        errors['year'] = 'Год должен быть числом'
+    
+    # Проверка описания
+    if not data.get('description') or str(data['description']).strip() == '':
+        errors['description'] = 'Описание не может быть пустым'
+    
+    if errors:
+        return jsonify(errors), 400
+    
+    # Создание нового фильма
     new_film = {
         'title': data['title'],
         'title_ru': data['title_ru'],
-        'year': data['year'],
+        'year': int(data['year']),
         'description': data['description']
     }
     
     films.append(new_film)
-    return str(len(films) - 1), 201
+    
+    # Возвращаем ID нового фильма и код 201 Created
+    return jsonify({'id': len(films) - 1}), 201
