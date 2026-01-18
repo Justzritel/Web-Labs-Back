@@ -12,6 +12,7 @@ from lab4 import lab4
 from lab5 import lab5
 from lab6 import lab6
 from lab7 import lab7
+from lab8 import lab8
 
 app= Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'совершенно-секретный ключ')
@@ -23,6 +24,7 @@ app.register_blueprint(lab4)
 app.register_blueprint(lab5)
 app.register_blueprint(lab6)
 app.register_blueprint(lab7)
+app.register_blueprint(lab8)
 
 @app.route("/")
 @app.route("/index")
@@ -44,6 +46,7 @@ def index():
                 <li><a href=""" + url_for('lab5.lab') + """>Пятая лабораторная</a></li>
                 <li><a href=""" + url_for('lab6.lab') + """>Шестая лабораторная</a></li>
                 <li><a href=""" + url_for('lab7.lab') + """>Седьмая лабораторная</a></li>
+                <li><a href=""" + url_for('lab8.lab') + """>Восьмая лабораторная</a></li>
         </main>
         <footer>
             Крадинов Анатолий Иванович, ФБИ-33, 3 курс, 2025

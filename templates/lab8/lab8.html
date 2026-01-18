@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8{% endblock %}
+
+{% block main %}
+    <div class="knowledge-base">
+        <h1>База знаний</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" style="margin-bottom: 15px;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <nav class="top-menu">
+            <a href="/lab8/articles/public/" class="menu-item">Публичные статьи</a>
+            <a href="/lab8/articles/search/" class="menu-item">Поиск</a>
+            
+            {% if username != 'anonymous' %}
+                <a href="/lab8/articles/" class="menu-item">Мои статьи</a>
+                <a href="/lab8/articles/create/" class="menu-item">Создать статью</a>
+                <a href="/lab8/logout" class="menu-item">Выйти</a>
+                <div class="user-display">{{ username }}</div>
+            {% else %}
+                <a href="/lab8/login" class="menu-item">Войти</a>
+                <a href="/lab8/register" class="menu-item">Регистрация</a>
+                <div class="user-display">Anonymous</div>
+            {% endif %}
+        </nav>
+        
+        <div>
+            <h2>Добро пожаловать{% if username != 'anonymous' %}, {{ username }}{% endif %}!</h2>
+            <p>Это система управления статьями (база знаний).</p>
+            
+            <h3>Доступные функции:</h3>
+            <ul>
+                <li>Просмотр публичных статей всех пользователей</li>
+                <li>Поиск по статьям (регистронезависимый)</li>
+                
+                {% if username != 'anonymous' %}
+                    <li>Просмотр и управление своими статьями</li>
+                    <li>Создание новых статей</li>
+                    <li>Редактирование и удаление своих статей</li>
+                {% else %}
+                    <li><a href="/lab8/login">Войдите</a> для работы со своими статьями</li>
+                {% endif %}
+            </ul>
+            
+            <h3>Быстрые ссылки:</h3>
+            <p>
+                <a href="/lab8/articles/public/">Публичные статьи</a> | 
+                <a href="/lab8/articles/search/">Поиск статей</a>
+                {% if username != 'anonymous' %}
+                    | <a href="/lab8/articles/">Мои статьи</a> | 
+                    <a href="/lab8/articles/create/">Создать статью</a>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+{% endblock %}
