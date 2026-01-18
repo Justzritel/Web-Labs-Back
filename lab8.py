@@ -11,6 +11,3 @@ def lab():
     username = session.get('username', 'anonymous')
     return render_template('lab8/lab8.html', username=username)
 
-@lab8.route('/lab8/login', methods=['GET', 'POST'])
-def login():
-    
