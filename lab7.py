@@ -96,3 +96,25 @@ def put_film(id):
         return {'description': 'Заполните описание'}, 400
     films[id] = film
     return films[id]
+
+@lab7.route('/lab7/rest-api/films/', methods=['POST'])
+def add_film():
+    data = request.get_json()
+    
+    if not data:
+        return '', 400
+    
+    required_fields = ['title', 'title_ru', 'year', 'description']
+    for field in required_fields:
+        if field not in data:
+            return f'Missing required field: {field}', 400
+    
+    new_film = {
+        'title': data['title'],
+        'title_ru': data['title_ru'],
+        'year': data['year'],
+        'description': data['description']
+    }
+    
+    films.append(new_film)
+    return str(len(films) - 1), 201
